@@ -1,0 +1,41 @@
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+
+
+buildscript {
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:" + springBootVersion)
+    }
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'GoEuroDemoApp', 'Implementation-Version': version
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
+    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    compile "org.springframework.cloud:spring-cloud-starter:$springCloudStarterVersion"
+    compile "org.projectlombok:lombok:$lombokVersion"
+
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.mockito:mockito-all:$mockitoVersion"
+
+}
+
+springBoot {
+    mainClass = "com.komarnytskyy.microservice.bus.route.BusRouteServer"
+}
+
