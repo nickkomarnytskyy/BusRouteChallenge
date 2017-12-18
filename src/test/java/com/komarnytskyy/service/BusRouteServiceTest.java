@@ -4,16 +4,17 @@ import com.komarnytskyy.microservice.bus.route.dto.RouteCheckResponse;
 import com.komarnytskyy.microservice.bus.route.exception.BadRequestException;
 import com.komarnytskyy.microservice.bus.route.repository.BusRoutesRepository;
 import com.komarnytskyy.microservice.bus.route.service.impl.BusRouteServiceImpl;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -31,20 +32,44 @@ public class BusRouteServiceTest {
     }
 
     @Test
-    public void testValidData() {
+    public void testFalse() {
 
         final int depSid = 1;
         final int arrSid = 2;
-        final boolean direct = true;
 
-        when(busRoutesRepository.check(depSid, arrSid)).thenReturn(direct);
+        when(busRoutesRepository.getBusRouteIds(depSid)).thenReturn(new HashSet<>());
+        when(busRoutesRepository.getBusRouteIds(arrSid)).thenReturn(new HashSet<>());
 
         RouteCheckResponse routeCheckResponse = busRouteService.checkRoute(depSid, arrSid);
 
         assertNotNull(routeCheckResponse);
         assertEquals("Dep_sid should be the same", depSid, routeCheckResponse.getDepSid());
         assertEquals("Arr_sid should be the same", arrSid, routeCheckResponse.getArrSid());
-        assertEquals("Direct boolean should be the same", direct, routeCheckResponse.isDirectBusRoute());
+        assertFalse("Direct should be false", routeCheckResponse.isDirectBusRoute());
+
+    }
+
+    @Test
+    public void testTrue() {
+
+        final int depSid = 1;
+        final int arrSid = 2;
+
+        Set<Integer> set1 = new HashSet<>();
+        Set<Integer> set2 = new HashSet<>();
+
+        set1.addAll(Arrays.asList(1, 2));
+        set2.addAll(Arrays.asList(2, 3));
+
+        when(busRoutesRepository.getBusRouteIds(depSid)).thenReturn(set1);
+        when(busRoutesRepository.getBusRouteIds(arrSid)).thenReturn(set2);
+
+        RouteCheckResponse routeCheckResponse = busRouteService.checkRoute(depSid, arrSid);
+
+        assertNotNull(routeCheckResponse);
+        assertEquals("Dep_sid should be the same", depSid, routeCheckResponse.getDepSid());
+        assertEquals("Arr_sid should be the same", arrSid, routeCheckResponse.getArrSid());
+        assertTrue("Direct should be true", routeCheckResponse.isDirectBusRoute());
 
     }
 }

@@ -13,8 +13,7 @@ import org.springframework.boot.ApplicationArguments;
 import java.io.IOException;
 import java.util.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -30,6 +29,9 @@ public class BusRoutesRepositoryTest {
     @Mock
     private ApplicationArguments applicationArguments;
 
+    private HashSet<Integer> hashSet1;
+    private HashSet<Integer> hashSet2;
+
     @Before
     public void init() throws IOException {
         when(applicationArguments.getSourceArgs()).thenReturn(new String[]{"data/example"});
@@ -38,31 +40,31 @@ public class BusRoutesRepositoryTest {
     }
 
     @Test
-    public void testNonExisting() throws IOException {
-        boolean check = busRoutesRepository.check(15, 10);
-        assertFalse(check);
+    public void testNonExisting() {
+        Set<Integer> busRoutes = busRoutesRepository.getBusRouteIds(15);
+        assertNotNull(busRoutes);
+        assertTrue("BusRoutes set should be empty", busRoutes.isEmpty());
     }
 
     @Test
-    public void testDirectFalse() throws IOException {
-        boolean check = busRoutesRepository.check(2, 3);
-        assertFalse(check);
+    public void testExisting() {
+        Set<Integer> busRoutes = busRoutesRepository.getBusRouteIds(1);
+        assertNotNull(busRoutes);
+        assertTrue(hashSet1 != busRoutes);
+        assertEquals("Sets should be the same", hashSet1, busRoutes);
     }
 
-    @Test
-    public void testDirectTrue() throws IOException {
-        boolean check = busRoutesRepository.check(3, 5);
-        assertTrue(check);
-    }
+    private Map<Integer, Set<Integer>> getData() {
+        Map<Integer, Set<Integer>> holder = new HashMap<>();
 
-    private List<Set<Integer>> getData() {
-        List<Set<Integer>> holder = new ArrayList<>();
-        HashSet<Integer> hashSet1 = new HashSet<>();
+        hashSet1 = new HashSet<>();
         hashSet1.addAll(Arrays.asList(1, 2));
-        HashSet<Integer> hashSet2 = new HashSet<>();
+        hashSet2 = new HashSet<>();
         hashSet2.addAll(Arrays.asList(3, 5, 7));
-        holder.add(hashSet1);
-        holder.add(hashSet2);
+
+        holder.put(1, hashSet1);
+        holder.put(2, hashSet2);
+
         return holder;
     }
 

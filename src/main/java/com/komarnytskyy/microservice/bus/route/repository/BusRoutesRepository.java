@@ -1,13 +1,16 @@
 package com.komarnytskyy.microservice.bus.route.repository;
 
+import java.util.Set;
+
 /**
  * Repository for bus routes
  */
 public interface BusRoutesRepository {
+
     /**
-     * @param depId departure station id
-     * @param arrId arrival station id
-     * @return boolean indicator of the result
+     * @param stationId id of station
+     * @return ids set of bus routes containing given station id
      */
-    boolean check(int depId, int arrId);
+    Set<Integer> getBusRouteIds(int stationId);
+
 }
