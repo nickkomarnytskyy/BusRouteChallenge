@@ -32,9 +32,9 @@ public class BusRouteServiceImpl implements BusRoutesService {
 
         depBusRoutes.retainAll(arrBusRoutes);
 
-        boolean exists = depBusRoutes.size() != 0;
-
+        boolean exists = !depBusRoutes.isEmpty();
         log.info("BusRoute existence from station {} to station {} - {}", depSid, arrSid, exists);
+
         return new RouteCheckResponse(depSid, arrSid, exists);
     }
 
